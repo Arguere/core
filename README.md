@@ -16,6 +16,14 @@ docker build -t fastapi-audio .
 docker run -p 8000:8000 fastapi-audio
 ```
 
+or
+
+```bash
+fastapi dev app/main.py
+```
+
+Then visit `http://localhost:8000/docs` to access the Swagger UI.
+
 ## API Usage
 
 POST /api/audio/analyze
