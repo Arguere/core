@@ -1,32 +1,39 @@
 from typing import Dict
 import aiohttp
 from app.core.config import settings
+from cerebras.cloud.sdk import Cerebras
 
 class LLMService:
     @staticmethod
     async def get_completion(prompt: str) -> Dict:
-        async with aiohttp.ClientSession() as session:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {settings.LLM_API_KEY}",
-                    "Content-Type": "application/json"
-                }
-                data = {
-                    "model": "your-llm-model",  # Specify your LLM model
-                    "prompt": prompt,
-                    "max_tokens": 500,
-                    "temperature": 0.7
-                }
+        if not settings.CEREBRAS_API_KEY:
+            raise ValueError("LLM API key is not set in the configuration.")
+        
+        try:
+            # Initialize Cerebras client
+            client = Cerebras(api_key=settings.CEREBRAS_API_KEY)
+            
+            stream = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "system",
+                        "content": prompt
+                    }
+                ],
+                model="qwen-3-32b",
+                stream=True,
+                max_completion_tokens=16382,
+                temperature=0.7,
+                top_p=0.95,
+            )
+            # Collect the response
+            response = ""
+            async for chunk in stream:
+                response += chunk["choices"][0]["message"]["content"]
                 
-                async with session.post(
-                    "https://api.llm-provider.com/v1/completions",  # TODO: Replace with actual LLM API endpoint
-                    json=data,
-                    headers=headers
-                ) as response:
-                    if response.status == 200:
-                        result = await response.json()
-                        return result.get("choices", [{}])[0].get("text", {})
-                    else:
-                        raise Exception(f"LLM API error: {response.status}")
-            except Exception as e:
-                raise Exception(f"LLM service error: {str(e)}")
+            # print(chunk.choices[0].delta.content or "", end="")
+            return {"text": response}
+        except aiohttp.ClientError as e:
+            raise Exception(f"LLM service connection error: {str(e)}")
+        except Exception as e:
+            raise Exception(f"LLM service error: {str(e)}")

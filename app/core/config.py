@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     AUDIO_UPLOAD_DIR: str = "./uploads/audio"
     LLM_API_KEY: str = os.getenv("LLM_API_KEY", "your-llm-api-key")
     ASSEMBLY_AI_API_KEY: str = os.getenv("ASSEMBLY_AI_API_KEY", "your-assemblyai-api-key")
+    CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY", "your-cerebras-api-key")
     
     class Config:
         case_sensitive = True

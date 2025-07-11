@@ -22,17 +22,7 @@ class FeedbackGenerator:
             1. What you did well
             2. Suggestions to improve
             """
-            
-            llm_response = await LLMService.get_completion(prompt)
-            
-            # Parse LLM response (assuming structured output)
-            # This is a simplified parsing; adjust based on actual LLM response format
-            what_went_well = llm_response.get("what_went_well", "Good effort in completing the scenario.")
-            suggestions = llm_response.get("suggestions", "Consider practicing more to improve fluency.")
-            
-            return {
-                "what_went_well": what_went_well,
-                "suggestions": suggestions
-            }
+   
+            return await LLMService.get_completion(prompt)
         except Exception as e:
             raise Exception(f"Feedback generation failed: {str(e)}")
