@@ -1,7 +1,15 @@
 import librosa
 import numpy as np
 from typing import Dict
-from app.utils.audio_processor import AudioProcessor
+import assemblyai as aai
+from app.core.config import settings
+
+
+# AssemblyAI client setup
+aai.settings.api_key = settings.ASSEMBLY_AI_API_KEY
+transcriber = aai.Transcriber()
+config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.slam_1, )
+
 
 class AudioAnalyzer:
     @staticmethod
@@ -9,21 +17,27 @@ class AudioAnalyzer:
         try:
             # Load audio file
             y, sr = librosa.load(audio_path)
+            transcript = transcriber.transcribe(audio_path, config=config)
+            
+            if not transcript or not transcript.text or transcript.status == "error":
+                raise ValueError("Transcription failed or returned empty text.", transcript.error)
+            
+            transcription = transcript.text
+                        
+            # Calculate average confidence score as a proxy for pronunciation accuracy
+            word_count = transcript.words
+            confidence_scores = [word.confidence for word in word_count]
+            average_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0
+            asr_accuracy = average_confidence * 100  # Scale to 0-100
             
             # Calculate speech rate (words per minute)
             duration = librosa.get_duration(y=y, sr=sr)
-            # Note: This is a simplified estimation
-            word_count = AudioProcessor.estimate_word_count(y, sr)
-            speech_rate = (word_count / duration) * 60 if duration > 0 else 0
+            speech_rate = len(transcription.split()) / duration * 60  # Words per minute
             
             # Calculate spectral clarity
             spectral_centroids = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
             spectral_clarity = float(np.mean(spectral_centroids))
             
-            # TODO: change this to use a real ASR service
-            # Note: ASR accuracy would require an external speech-to-text service
-            # This is a placeholder for ASR accuracy
-            asr_accuracy = AudioProcessor.estimate_asr_accuracy(y, sr)
             
             return {
                 "speech_rate": speech_rate,

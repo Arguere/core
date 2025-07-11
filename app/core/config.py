@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "https://arguere.com"]
     AUDIO_UPLOAD_DIR: str = "./uploads/audio"
     LLM_API_KEY: str = os.getenv("LLM_API_KEY", "your-llm-api-key")
+    ASSEMBLY_AI_API_KEY: str = os.getenv("ASSEMBLY_AI_API_KEY", "your-assemblyai-api-key")
     
     class Config:
         case_sensitive = True
