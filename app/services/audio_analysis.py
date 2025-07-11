@@ -14,6 +14,9 @@ config = aai.TranscriptionConfig(speech_model=aai.SpeechModel.slam_1, )
 class AudioAnalyzer:
     @staticmethod
     async def analyze_audio(audio_path: str) -> Dict[str, float]:
+        if not audio_path:
+            raise ValueError("Audio path must be provided")
+        
         try:
             # Load audio file
             y, sr = librosa.load(audio_path)
@@ -40,6 +43,7 @@ class AudioAnalyzer:
             
             
             return {
+                "transcription": transcription,
                 "speech_rate": speech_rate,
                 "duration": duration,
                 "spectral_clarity": spectral_clarity,

@@ -10,7 +10,6 @@ class Submission(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     scenario_id = Column(Integer, ForeignKey("scenarios.id"))
     content_type = Column(String)  # 'audio' or 'text'
-    content_path = Column(String)
     speech_rate = Column(Float, nullable=True)
     duration = Column(Float, nullable=True)
     spectral_clarity = Column(Float, nullable=True)

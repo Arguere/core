@@ -4,7 +4,6 @@ from datetime import datetime
 
 class SubmissionBase(BaseModel):
     content_type: str
-    content_path: str
 
 class SubmissionCreate(SubmissionBase):
     scenario_id: int

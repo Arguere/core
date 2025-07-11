@@ -8,8 +8,7 @@ class Feedback(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     submission_id = Column(Integer, ForeignKey("submissions.id"))
-    what_went_well = Column(String)
-    suggestions = Column(String)
+    content = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     submission = relationship("Submission", back_populates="feedback")
