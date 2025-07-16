@@ -7,11 +7,11 @@ class MethodBase(BaseModel):
     tutorial: Optional[str] = None
 
 class MethodCreate(MethodBase):
-    learning_path_id: int
+    track_id: int
 
 class Method(MethodBase):
     id: int
-    learning_path_id: int
+    track_id: int
     
     class Config:
         orm_mode = True

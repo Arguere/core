@@ -7,7 +7,7 @@ class Submission(Base):
     __tablename__ = "submissions"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(String, ForeignKey("users.id"))
     scenario_id = Column(Integer, ForeignKey("scenarios.id"))
     content_type = Column(String)  # 'audio' or 'text'
     speech_rate = Column(Float, nullable=True)

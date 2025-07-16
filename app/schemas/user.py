@@ -1,25 +1,14 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+from typing import Optional, Dict, List
 
-class UserBase(BaseModel):
+class User(BaseModel):
+    id: str
     email: EmailStr
     full_name: Optional[str] = None
-
-class UserCreate(UserBase):
-    password: str
-
-class User(UserBase):
-    id: int
+    onboarding_options: Optional[Dict[str, List[str]]] = None
     created_at: datetime
-    
+
     class Config:
         orm_mode = True
-
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-class Token(BaseModel):
-    access_token_token: str
-    token_type: str

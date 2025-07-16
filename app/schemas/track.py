@@ -2,14 +2,14 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-class LearningPathBase(BaseModel):
+class TrackBase(BaseModel):
     title: str
     objectives: Optional[str] = None
 
-class LearningPathCreate(LearningPathBase):
+class TrackCreate(TrackBase):
     pass
 
-class LearningPath(LearningPathBase):
+class Track(TrackBase):
     id: int
     user_id: int
     

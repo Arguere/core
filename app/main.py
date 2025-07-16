@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.endpoints import users, learning_paths, methods, scenarios, submissions, feedbacks
+from app.api.v1.endpoints import tracks, users, methods, scenarios, submissions, feedbacks
 from app.core.config import settings
 from app.core.database import engine
 from app.core.database import Base
@@ -25,7 +25,7 @@ Base.metadata.create_all(bind=engine)
 
 # Include API routers
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
-app.include_router(learning_paths.router, prefix="/api/v1/learning-paths", tags=["learning_paths"])
+app.include_router(tracks.router, prefix="/api/v1/tracks", tags=["tracks"])
 app.include_router(methods.router, prefix="/api/v1/methods", tags=["methods"])
 app.include_router(scenarios.router, prefix="/api/v1/scenarios", tags=["scenarios"])
 app.include_router(submissions.router, prefix="/api/v1/submissions", tags=["submissions"])

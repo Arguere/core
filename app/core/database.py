@@ -1,9 +1,14 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-from supabase import create_client, Client
+DATABASE_URL = settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
 
-supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+AsyncSessionLocal = sessionmaker(
+    bind=engine, class_=AsyncSession, expire_on_commit=False
+)
 
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
