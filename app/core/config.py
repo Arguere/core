@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY", "your-cerebras-api-key")
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "https://your-supabase-url.supabase.co")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "your-supabase-key")
+    SUPABASE_JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET", "your-supabase-jwt-secret")
     
     class Config:
         case_sensitive = True
