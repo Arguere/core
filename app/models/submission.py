@@ -8,7 +8,7 @@ class Submission(Base):
     __tablename__ = "submissions"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("profiles.id"), nullable=False)
     scenario_id = Column(UUID(as_uuid=True), ForeignKey("scenarios.id"), nullable=False)
     content_type = Column(String)  # 'audio' or 'text'
     speech_rate = Column(Float, nullable=True)
@@ -18,6 +18,6 @@ class Submission(Base):
     score = Column(Float)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    user = relationship("User", back_populates="submissions")
+    user = relationship("Profile", back_populates="submissions")
     scenario = relationship("Scenario", back_populates="submissions")
     feedback = relationship("Feedback", back_populates="submission")

@@ -8,5 +8,8 @@ async def read_users_me(current_user=Depends(get_current_user)):
     return {
         "id": current_user["sub"],
         "email": current_user.get("email"),
-        "claims": current_user
+        "full_name": current_user.get("full_name"),
+        "onboarding_options": current_user.get("onboarding_options"),
+        "created_at": current_user.get("created_at"),
+        "updated_at": current_user.get("updated_at"),
     }

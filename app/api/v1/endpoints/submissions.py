@@ -8,7 +8,7 @@ from app.schemas.submission import Submission, SubmissionCreate
 from app.dependencies.auth import get_current_user
 from app.services.audio_analysis import AudioAnalyzer
 from app.services.feedback_generator import FeedbackGenerator
-from app.models.user import User
+from app.models.profile import Profile
 from app.models.feedback import Feedback
 from app.models.scenario import Scenario
 from app.models.method import Method
@@ -23,7 +23,7 @@ async def create_submission(
     file: UploadFile = File(None),
     text: str = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Profile = Depends(get_current_user)
 ):
     if not file and not text:
         raise HTTPException(status_code=400, detail="Either file or text must be provided")
@@ -95,7 +95,7 @@ async def create_submission(
 def read_submissions(
     scenario_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Profile = Depends(get_current_user)
 ):
     return db.query(Submission).filter(
         Submission.scenario_id == scenario_id,

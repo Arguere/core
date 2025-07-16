@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.models.method import Method
 from app.schemas.method import Method, MethodCreate
 from app.dependencies.auth import get_current_user
-from app.models.user import User
+from app.models.profile import Profile
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ router = APIRouter()
 def create_method(
     method: MethodCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Profile = Depends(get_current_user)
 ):
     db_method = Method(**method.dict())
     db.add(db_method)
@@ -25,6 +25,6 @@ def create_method(
 def read_methods(
     track_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Profile = Depends(get_current_user)
 ):
     return db.query(Method).filter(Method.track_id == track_id).all()

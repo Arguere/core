@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 from app.core.database import Base
-from app.models import user, track, method, scenario, section, submission, feedback
+from app.models import profile, track, method, scenario, section, submission, feedback
 from app.core.config import settings
 
 from sqlalchemy import engine_from_config
