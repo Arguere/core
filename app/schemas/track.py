@@ -4,7 +4,6 @@ from datetime import datetime
 
 class TrackBase(BaseModel):
     title: str
-    objectives: Optional[str] = None
 
 class TrackCreate(TrackBase):
     pass
