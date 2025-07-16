@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, UUID, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
+import uuid
 from app.core.database import Base
 
 class Method(Base):
     __tablename__ = "methods"
     
-    id = Column(Integer, primary_key=True, index=True)
-    track_id = Column(Integer, ForeignKey("tracks.id"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    track_id = Column(UUID(as_uuid=True), ForeignKey("tracks.id"))
     title = Column(String, nullable=False)
     description = Column(String)
     tutorial = Column(String)

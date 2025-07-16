@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, UUID, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+import uuid
 
 class Scenario(Base):
     __tablename__ = "scenarios"
     
-    id = Column(Integer, primary_key=True, index=True)
-    method_id = Column(Integer, ForeignKey("methods.id"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    method_id = Column(UUID(as_uuid=True), ForeignKey("methods.id"))
     title = Column(String, nullable=False)
     description = Column(String)
     

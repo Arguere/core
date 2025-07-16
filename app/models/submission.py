@@ -1,14 +1,15 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+import uuid
 
 class Submission(Base):
     __tablename__ = "submissions"
     
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey("users.id"))
-    scenario_id = Column(Integer, ForeignKey("scenarios.id"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    scenario_id = Column(UUID(as_uuid=True), ForeignKey("scenarios.id"), nullable=False)
     content_type = Column(String)  # 'audio' or 'text'
     speech_rate = Column(Float, nullable=True)
     duration = Column(Float, nullable=True)
