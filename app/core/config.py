@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     LLM_API_KEY: str = os.getenv("LLM_API_KEY", "your-llm-api-key")
     ASSEMBLY_AI_API_KEY: str = os.getenv("ASSEMBLY_AI_API_KEY", "your-assemblyai-api-key")
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY", "your-cerebras-api-key")
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "https://your-supabase-url.supabase.co")
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "your-supabase-key")
     
     class Config:
         case_sensitive = True
