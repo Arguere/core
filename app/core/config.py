@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "your-supabase-key")
     SUPABASE_JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET", "your-supabase-jwt-secret")
     
+    echo_sql: bool = True  # COPILOT: Set to True for debugging SQL queries, False for production
+    
     class Config:
         case_sensitive = True
         env_file = ".env"

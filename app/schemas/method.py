@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional
 
 class MethodBase(BaseModel):
@@ -7,11 +7,11 @@ class MethodBase(BaseModel):
     tutorial: Optional[str] = None
 
 class MethodCreate(MethodBase):
-    track_id: int
+    track_id: UUID4
 
 class Method(MethodBase):
-    id: int
-    track_id: int
+    id: UUID4
+    track_id: UUID4
     
     class Config:
         from_attributes = True

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional, List
 from datetime import datetime
 
@@ -9,8 +9,8 @@ class TrackCreate(TrackBase):
     pass
 
 class Track(TrackBase):
-    id: int
-    user_id: int
+    id: UUID4
+    user_id: UUID4
     
     class Config:
         from_attributes = True

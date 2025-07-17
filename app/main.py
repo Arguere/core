@@ -1,11 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from app.api.v1.endpoints import tracks, users, methods, scenarios, submissions, feedbacks
 from app.core.config import settings
-from app.core.database import engine
+from app.core.database import sessionmanager
 from app.core.database import Base
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Function that handles startup and shutdown events.
+    To understand more, read https://fastapi.tiangolo.com/advanced/events/
+    """
+    yield
+    if sessionmanager._engine is not None:
+        # Close the DB connection
+        await sessionmanager.close()
+
 app = FastAPI(
+    lifespan=lifespan,
     title="Arguere Backend",
     description="Backend API for Arguere learning platform",
     version="1.0.0"

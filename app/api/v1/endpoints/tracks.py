@@ -1,29 +1,32 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+
 from typing import List
-from app.core.database import get_db
-from app.models.track import Track
+from app.core.database import DBSessionDep
+from app.models.track import Track as TrackModel
 from app.schemas.track import Track, TrackCreate
 from app.dependencies.auth import get_current_user
 from app.models.profile import Profile
+from sqlalchemy.future import select
+import uuid
 
 router = APIRouter()
 
 @router.post("/", response_model=Track)
-def create_track(
+async def create_track(
     track: TrackCreate,
-    db: Session = Depends(get_db),
+    db: DBSessionDep,
     current_user: Profile = Depends(get_current_user)
 ):
-    db_track = Track(**track.model_dump(), user_id=current_user.id)
+    db_track = TrackModel(id=uuid.uuid4(), **track.model_dump(), user_id=current_user.id)
     db.add(db_track)
-    db.commit()
-    db.refresh(db_track)
+    await db.commit()
+    await db.refresh(db_track)
     return db_track
 
 @router.get("/", response_model=List[Track])
-def read_tracks(
-    db: Session = Depends(get_db),
+async def read_tracks(
+    db: DBSessionDep,
     current_user: Profile = Depends(get_current_user)
 ):
-    return db.query(Track).filter(Track.user_id == current_user.id).all()
+    result = await db.scalars(select(TrackModel).filter_by(user_id=current_user.id))
+    return result.all()

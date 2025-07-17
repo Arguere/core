@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional
 from datetime import datetime
 
 
 class Feedback(BaseModel):
-    id: int
-    submission_id: int
+    id: UUID4
+    submission_id: UUID4
     content: str
     created_at: datetime
     

@@ -24,6 +24,7 @@ fastapi==0.115.14
 fastapi-cli==0.0.7
 frozenlist==1.7.0
 gotrue==2.12.3
+greenlet==3.2.3
 h11==0.16.0
 h2==4.2.0
 hpack==4.1.0
