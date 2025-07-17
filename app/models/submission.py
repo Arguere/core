@@ -8,8 +8,8 @@ class Submission(Base):
     __tablename__ = "submissions"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("profiles.id"), nullable=False)
-    scenario_id = Column(UUID(as_uuid=True), ForeignKey("scenarios.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=False)
+    scenario_id = Column(UUID(as_uuid=True), ForeignKey("scenarios.id", ondelete="CASCADE"), nullable=False)
     content_type = Column(String)  # 'audio' or 'text'
     speech_rate = Column(Float, nullable=True)
     duration = Column(Float, nullable=True)

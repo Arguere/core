@@ -7,7 +7,7 @@ class Scenario(Base):
     __tablename__ = "scenarios"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    method_id = Column(UUID(as_uuid=True), ForeignKey("methods.id"))
+    method_id = Column(UUID(as_uuid=True), ForeignKey("methods.id", ondelete="CASCADE"))
     title = Column(String, nullable=False)
     description = Column(String)
     

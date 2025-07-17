@@ -7,7 +7,7 @@ import uuid
 
 class Profile(Base):
     __tablename__ = "profiles"
-    id = Column(UUID(as_uuid=True), ForeignKey("auth.users.id", ondelete="CASCADE"), primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True)
     email = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String)
     onboarding_options = Column(JSONB, nullable=True)

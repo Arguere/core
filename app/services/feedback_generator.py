@@ -6,7 +6,7 @@ class FeedbackGenerator:
     async def generate_feedback(transcription: str, framework_name: str, scenario_description: str) -> Dict[str, str]:
         try:
             # TODO: today we assume the llm as the context of the framework, 
-            # in the future we might want to retrieve the framework description from the database
+            # in the future we might want to inject the framework context
             prompt = f"""
             
             You are a communication coach and feedback expert.

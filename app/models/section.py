@@ -10,6 +10,6 @@ class Section(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     type = Column(String, nullable=False)  # 'method-breakdown', 'examples', etc.
-    method_id = Column(UUID(as_uuid=True), ForeignKey("methods.id"), nullable=False)
+    method_id = Column(UUID(as_uuid=True), ForeignKey("methods.id", ondelete="CASCADE"), nullable=False)
     
     method = relationship("Method", back_populates="sections")
