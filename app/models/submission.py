@@ -18,6 +18,6 @@ class Submission(Base):
     score = Column(Float)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    user = relationship("Profile", back_populates="submissions")
+    profile = relationship("Profile", back_populates="submissions")
     scenario = relationship("Scenario", back_populates="submissions")
     feedback = relationship("Feedback", back_populates="submission")

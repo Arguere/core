@@ -10,5 +10,5 @@ class Track(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("profiles.id", ondelete="CASCADE"), nullable=True) 
     title = Column(String, nullable=False)
 
-    user = relationship("Profile", back_populates="tracks")
+    profile = relationship("Profile", back_populates="track")
     methods = relationship("Method", back_populates="track")

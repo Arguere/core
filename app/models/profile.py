@@ -14,4 +14,6 @@ class Profile(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now()) # TODO: i have a feeling that this will not work with supabase auth because idk if it updates automatically, need to test it
     
-    tracks = relationship("Track", back_populates="profile")
+    track = relationship("Track", back_populates="profile")
+    submissions = relationship("Submission", back_populates="profile")
+    
