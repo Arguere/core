@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
-from app.core.database import get_db
+from app.core.database import DBSessionDep
 from app.core.config import settings
 from app.models.submission import Submission
 from app.schemas.submission import Submission, SubmissionCreate
@@ -19,10 +19,10 @@ router = APIRouter()
 
 @router.post("/", response_model=Submission)
 async def create_submission(
+    db: DBSessionDep,
     scenario_id: int,
     file: UploadFile = File(None),
     text: str = None,
-    db: Session = Depends(get_db),
     current_user: Profile = Depends(get_current_user)
 ):
     if not file and not text:
@@ -73,8 +73,8 @@ async def create_submission(
         transcription = analysis_results["transcription"]
     
     db.add(db_submission)
-    db.commit()
-    db.refresh(db_submission)
+    await db.commit()
+    await db.refresh(db_submission)
     
     # Generate feedback
     feedback_data = await FeedbackGenerator.generate_feedback(
@@ -87,17 +87,17 @@ async def create_submission(
         **feedback_data
     )
     db.add(db_feedback)
-    db.commit()
+    await db.commit()
     
     return db_submission, db_feedback
 
 @router.get("/{scenario_id}", response_model=List[Submission])
-def read_submissions(
+async def read_submissions(
     scenario_id: int,
-    db: Session = Depends(get_db),
+    db: DBSessionDep,
     current_user: Profile = Depends(get_current_user)
 ):
-    return db.query(Submission).filter(
+    return await db.query(Submission).filter(
         Submission.scenario_id == scenario_id,
         Submission.user_id == current_user.id
     ).all()

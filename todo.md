@@ -1,0 +1,3 @@
+- Fix the creation of tracks: it is currently creating one with the user ID by default, but it should actually create one without a user ID, unless one is explicitly provided.
+- Add sections model, relationships and logic
+- The methods can be part of either a default track or a user track, but the method's model only has a reference to one track
