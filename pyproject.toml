@@ -14,6 +14,17 @@ pydantic-settings = "^2.10.1"
 pyjwt = "^2.10.1"
 dotenv = "^0.9.9"
 jwt = "^1.4.0"
+sqlalchemy = "^2.0.41"
+alembic = "^1.16.4"
+asyncpg = "^0.30.0"
+opentelemetry-api = "^1.36.0"
+opentelemetry-sdk = "^1.36.0"
+opentelemetry-instrumentation-fastapi = "^0.57b0"
+opentelemetry-exporter-otlp = "^1.36.0"
+psycopg2 = "^2.9.10"
+cerebras-cloud-sdk = "^1.35.0"
+aiohttp = "^3.12.15"
+greenlet = "^3.2.3"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
