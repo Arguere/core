@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+    ASSEMBLYAI_API_KEY: str = os.getenv("ASSEMBLYAI_API_KEY")
 
     class Config: 
         env_file = ".env"
