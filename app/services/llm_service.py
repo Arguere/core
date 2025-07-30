@@ -1,38 +1,38 @@
 from typing import Dict
 import aiohttp
+from openai import AsyncOpenAI
 from app.core.config import settings
-from cerebras.cloud.sdk import Cerebras
 
 class LLMService:
     @staticmethod
     async def get_completion(prompt: str) -> Dict:
-        if not settings.CEREBRAS_API_KEY:
-            raise ValueError("LLM API key is not set in the configuration.")
+        if not settings.OPENAI_API_KEY:
+            raise ValueError("OpenAI API key is not set in the configuration.")
         
         try:
-            # Initialize Cerebras client
-            client = Cerebras(api_key=settings.CEREBRAS_API_KEY)
-            
-            stream = client.chat.completions.create(
+            client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+
+            stream = await client.chat.completions.create(
                 messages=[
                     {
                         "role": "system",
                         "content": prompt
                     }
                 ],
-                model="qwen-3-32b",
+                model="gpt-4",  # ou "gpt-4o", "gpt-3.5-turbo", etc
                 stream=True,
-                max_completion_tokens=16382,
                 temperature=0.7,
                 top_p=0.95,
+                max_tokens=16382,
             )
-            # Collect the response
+
             response = ""
             async for chunk in stream:
-                response += chunk["choices"][0]["message"]["content"]
-                
-            # print(chunk.choices[0].delta.content or "", end="")
+                delta = chunk.choices[0].delta
+                response += delta.content if delta.content else ""
+
             return {"text": response}
+        
         except aiohttp.ClientError as e:
             raise Exception(f"LLM service connection error: {str(e)}")
         except Exception as e:

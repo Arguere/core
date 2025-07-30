@@ -5,10 +5,12 @@ from datetime import datetime
 
 class ScenarioBase(BaseModel): 
     user_id: UUID4
+    context: str
+    additional_info: Dict[str, str] = None
 
 
 class ScenarioCreate(ScenarioBase):
-    context: str
+    pass
 
 class Scenario(ScenarioBase):
     id: UUID4 

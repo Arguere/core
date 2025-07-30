@@ -3,6 +3,7 @@ from datetime import datetime
 
 class SubmissionCreate(BaseModel):
     scenario_id: UUID4
+    audio_url: str
 
 
 class Submission(BaseModel):
