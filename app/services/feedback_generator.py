@@ -1,7 +1,8 @@
 from typing import Dict, Any
-from app.schemas.feedback import GeneretedFeedback
+from app.schemas.feedback import GeneratedFeedback
 from app.services.llm_service import LLMService
 import json
+import re
 
 class FeedbackGenerator:
     @staticmethod
@@ -98,15 +99,15 @@ class FeedbackGenerator:
             }, indent=4)
 
             response = await LLMService.get_completion(prompt)
-            response_text = response.get("text", "").strip()
-            
+            response_text = FeedbackGenerator.clean_json_response(response.get("text", "").strip())
+              
             # Try to parse JSON response
             try:
                 parsed_response = json.loads(response_text)
                 if not isinstance(parsed_response, dict):
                     raise ValueError("Response is not a valid JSON object")
                 
-                return GeneretedFeedback(**parsed_response)
+                return GeneratedFeedback(**parsed_response)
             
             except json.JSONDecodeError:
                 raise ValueError(f"Invalid JSON response from LLM: {response_text}")
@@ -116,4 +117,11 @@ class FeedbackGenerator:
         except Exception as e:
             raise Exception(f"Feedback generation failed: {str(e)}")
 
+    @staticmethod
+    def clean_json_response(response: str) -> str:
+        """Remove Markdown code blocks or other non-JSON content."""
+        # Remove ```json and ``` markers
+        response = re.sub(r'^```json\s*|\s*```$', '', response, flags=re.MULTILINE)
+        # Remove leading/trailing whitespace
+        return response.strip()
   

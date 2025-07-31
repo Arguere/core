@@ -11,7 +11,7 @@ from app.core.config import settings
 aai.settings.api_key = settings.ASSEMBLYAI_API_KEY
 transcriber = aai.Transcriber()
 config = aai.TranscriptionConfig(
-    speech_model=aai.SpeechModel.nano,
+    speech_model=aai.SpeechModel.slam_1,
     language_detection=True
 )
 
