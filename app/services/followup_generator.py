@@ -1,13 +1,43 @@
 from typing import Dict
-from services.llm_service import LLMService
-
+from app.schemas.followup import GeneratedFollowUp
+from app.schemas.guideline import GeneratedGuideline
+from app.services.llm_service import LLMService
+import json
 
 class FollowUpGenerator:
     @staticmethod
-    async def generate() -> Dict[str, str]: 
+    async def generate(context: str) -> GeneratedGuideline: 
         try: 
-            prompt = ""
+            prompt = f"""{
+  "task": "Validate if user's scenario has enough context. If not, request clarification.",
+  "rules": [
+    "Respond in the user's input language.",
+    "If scenario is vague (e.g., 'I need help with a presentation'), ask 1–3 follow-up questions like:",
+      "- What is the goal of your communication? (e.g., inform, persuade, negotiate)",
+      "- Who is your audience? (role, cultural background, pain points)",
+      "- What are your key challenges? (e.g., nervousness, unclear message)"
+    "formulate questions relevant to the given scenario and context"
+  ],
+  "output_format": {
+    "status": "follow-up-needed | sufficient",
+    "follow_up_questions": ["..."]
+  },
+  "context": "SCENARIO CONTEXT: {context}",
+}."""
 
-            return await LLMService.get_completion(prompt)
+            response = await LLMService.get_completion(prompt)
+            response_text = response.get("text", "").strip()
+            
+            # Try to parse JSON response
+            try:
+                parsed_response = json.loads(response_text)
+                return GeneratedFollowUp(
+                    status=parsed_response.get("status", "follow-up-needed"),
+                    follow_up_questions=parsed_response.get("follow_up_questions", [])
+                )
+            except json.JSONDecodeError:
+                raise ValueError(f"Invalid JSON response from LLM: {response_text}")
+                
         except Exception as e:
-            raise Exception(f"FollowUp Questions generation failed: {str(e)}")
+            raise Exception(f"Guideline generation failed: {str(e)}")
+            

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from app.core.database import get_session
 from app.models.scenario import Scenario as ScenarioModel
-from app.schemas.scenario import Scenario, ScenarioCreate, ScenarioResponse
+from app.schemas.scenario import Scenario, ScenarioCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
@@ -11,7 +11,7 @@ from app.services.guideline_generator import GuidelineGenerator
 
 router = APIRouter()
 
-@router.post("/", response_model=ScenarioResponse)
+@router.post("/", response_model=Scenario)
 async def create_scenario(
     scenario: ScenarioCreate,
     session: AsyncSession = Depends(get_session),
@@ -45,7 +45,7 @@ async def create_scenario(
         raise HTTPException(status_code=500, detail=f"Failed to create scenario: {str(e)}")
 
 
-@router.get("/{user_id}", response_model=List[ScenarioResponse])
+@router.get("/{user_id}", response_model=List[Scenario])
 async def read_scenarios(
     user_id: uuid.UUID,
     session: AsyncSession = Depends(get_session)
@@ -59,7 +59,7 @@ async def read_scenarios(
         raise HTTPException(status_code=500, detail=f"Failed to fetch scenarios: {str(e)}")
 
 
-@router.get("/detail/{scenario_id}", response_model=ScenarioResponse)
+@router.get("/detail/{scenario_id}", response_model=Scenario)
 async def get_scenario_detail(
     scenario_id: uuid.UUID,
     session: AsyncSession = Depends(get_session)

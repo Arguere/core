@@ -1,5 +1,4 @@
 from typing import Dict
-import aiohttp
 from openai import AsyncOpenAI
 from app.core.config import settings
 import asyncio
@@ -46,15 +45,3 @@ class LLMService:
                 raise Exception(f"LLM service error: {str(e)}")
         
         raise Exception("LLM service failed after all retry attempts")
-
-    @staticmethod
-    async def get_structured_completion(prompt: str, response_format: str = "json") -> Dict:
-        """Get completion with structured output format"""
-        structured_prompt = f"""
-{prompt}
-
-IMPORTANT: Please provide your response in valid JSON format as specified in the prompt.
-Ensure all JSON keys are properly quoted and the structure is valid.
-"""
-        
-        return await LLMService.get_completion(structured_prompt, temperature=0.3)

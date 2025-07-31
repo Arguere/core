@@ -21,14 +21,3 @@ class Scenario(ScenarioBase):
     class Config:
         from_attributes = True
 
-
-class ScenarioResponse(ScenarioBase):
-    """Response model that includes both the scenario data and creation context"""
-    id: UUID4 
-    title: str
-    knowledge_foundation: str
-    guideline: Dict[str, str]
-    created_at: datetime
-    
-    class Config:
-        from_attributes = True

@@ -77,8 +77,6 @@ async def get_scenario_stats(
         "average_audio_score": round(avg_audio_score, 2) if avg_audio_score else None
     }
 
-@status_router.get("/health/detailed")
-async def detailed_health_check(session: AsyncSession = Depends(get_session)):
     """Detailed health check including database connectivity"""
     try:
         # Test database connection
