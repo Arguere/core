@@ -105,7 +105,9 @@ class FeedbackGenerator:
                 parsed_response = json.loads(response_text)
                 if not isinstance(parsed_response, dict):
                     raise ValueError("Response is not a valid JSON object")
+                
                 return GeneretedFeedback(**parsed_response)
+            
             except json.JSONDecodeError:
                 raise ValueError(f"Invalid JSON response from LLM: {response_text}")
             except ValueError as ve:

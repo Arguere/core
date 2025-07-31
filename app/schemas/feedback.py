@@ -4,20 +4,21 @@ from typing import Dict, Any, Optional, List, Literal
 
 class FeedbackBase(BaseModel):
     submission_id: UUID4
-    content: str
-    score: Optional[float] = Field(default=None, ge=0, le=100, description="Overall score out of 100")
-    audio_metrics: Optional[Dict[str, Any]] = Field(default=None, description="Audio analysis metrics")
-
-class FeedbackCreate(FeedbackBase):
-    pass
 
 class Feedback(FeedbackBase):
     id: UUID4
+    structured_feedback: Dict[str, Any]
+    overall_performance: Optional[str] = None
+    total_score: Optional[int] = None
+    content_alignment_score: Optional[int] = None
+    scenario_appropriateness_score: Optional[int] = None
+    communication_clarity_score: Optional[int] = None
+    audio_delivery_score: Optional[int] = None
+    
     created_at: datetime
 
     class Config:
         from_attributes = True
-        
 
 # --------- Generated feedback schema for structured evaluation
 class GuidelineAdherence(BaseModel):

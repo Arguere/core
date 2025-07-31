@@ -5,12 +5,12 @@ from app.models.submission import Submission as SubmissionModel
 from app.models.feedback import Feedback as FeedbackModel
 from app.models.scenario import Scenario as ScenarioModel
 from app.schemas.submission import SubmissionCreate, Submission, SubmissionWithFeedback
+from app.schemas.feedback import GeneratedFeedback
 from app.services.audio_analysis import AudioAnalyzer
 from app.services.feedback_generator import FeedbackGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
-import re
 
 router = APIRouter()
 
@@ -52,24 +52,25 @@ async def process_submission_async(
             submission.transcription = audio_analysis["transcription"]
             submission.audio_metrics = audio_analysis
             
-            # Generate feedback
-            feedback_content = await FeedbackGenerator.generate(
+            # Generate structured feedback
+            generated_feedback = await FeedbackGenerator.generate(
                 transcription=audio_analysis["transcription"],
                 scenario_context=scenario.knowledge_foundation,
                 guideline=scenario.guideline,
                 audio_metrics=audio_analysis
             )
             
-            # Extract score from feedback if possible
-            score = extract_score_from_feedback(feedback_content)
-            
-            # Create feedback record
+            # Create feedback record with structured data
             feedback = FeedbackModel(
                 id=uuid.uuid4(),
                 submission_id=submission_id,
-                content=feedback_content,
-                score=score,
-                audio_metrics=audio_analysis
+                structured_feedback=generated_feedback.model_dump(),
+                overall_performance=generated_feedback.overall_performance,
+                total_score=generated_feedback.score_summary.total_score,
+                content_alignment_score=generated_feedback.score_summary.content_alignment,
+                scenario_appropriateness_score=generated_feedback.score_summary.scenario_appropriateness,
+                communication_clarity_score=generated_feedback.score_summary.communication_clarity,
+                audio_delivery_score=generated_feedback.score_summary.audio_delivery,
             )
             session.add(feedback)
             
@@ -89,27 +90,6 @@ async def process_submission_async(
             except:
                 pass
             print(f"Error processing submission {submission_id}: {str(e)}")
-            
-            
-def extract_score_from_feedback(feedback_content: str) -> float:
-    """Extract numerical score from feedback content"""
-    try:
-        # Look for patterns like "TOTAL SCORE: 85/100" or "Score: 85"
-        patterns = [
-            r"TOTAL SCORE:\s*(\d+(?:\.\d+)?)/100",
-            r"Total Score:\s*(\d+(?:\.\d+)?)/100",
-            r"Overall Score:\s*(\d+(?:\.\d+)?)",
-            r"Score:\s*(\d+(?:\.\d+)?)"
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, feedback_content, re.IGNORECASE)
-            if match:
-                return float(match.group(1))
-        
-        return None
-    except:
-        return None
 
 @router.post("/", response_model=Submission)
 async def create_submission(
@@ -179,6 +159,21 @@ async def get_submission_with_feedback(
     feedback_result = await session.execute(feedback_stmt)
     feedback = feedback_result.scalar_one_or_none()
     
+    # Format response with structured feedback
+    feedback_data = None
+    if feedback:
+        feedback_data = {
+            "id": feedback.id,
+            "structured_feedback": feedback.structured_feedback,
+            "overall_performance": feedback.overall_performance,
+            "total_score": feedback.total_score,
+            "content_alignment_score": feedback.content_alignment_score,
+            "scenario_appropriateness_score": feedback.scenario_appropriateness_score,
+            "communication_clarity_score": feedback.communication_clarity_score,
+            "audio_delivery_score": feedback.audio_delivery_score,
+            "created_at": feedback.created_at,
+        }
+    
     response_data = {
         "id": submission.id,
         "scenario_id": submission.scenario_id,
@@ -186,13 +181,7 @@ async def get_submission_with_feedback(
         "audio_metrics": submission.audio_metrics,
         "processing_status": submission.processing_status,
         "created_at": submission.created_at,
-        "feedback": {
-            "id": feedback.id,
-            "content": feedback.content,
-            "score": feedback.score,
-            "audio_metrics": feedback.audio_metrics,
-            "created_at": feedback.created_at
-        } if feedback else None
+        "feedback": feedback_data
     }
     
     return response_data
