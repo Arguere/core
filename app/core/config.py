@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
     ASSEMBLYAI_API_KEY: str = os.getenv("ASSEMBLYAI_API_KEY")
+    ENV: str = os.getenv("ENV", "development")
 
     class Config: 
         env_file = ".env"
